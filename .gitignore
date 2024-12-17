@@ -3,7 +3,4 @@ dist/
 env/
 **/**/*.log
 package-lock.json
-tsconfig.json
-tsconfig.prod.json
-tsconfig.json
 build.js
