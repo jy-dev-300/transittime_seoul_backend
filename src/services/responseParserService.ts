@@ -125,21 +125,41 @@ export const getTrainInfoAndArrivalTime = (
       const direction = Array.isArray(entry.trainLineNm) ? entry.trainLineNm[0] : entry.trainLineNm; //trainLineNm
       const typeOfTrain = Array.isArray(entry.btrainSttus) ? entry.btrainSttus[0] : entry.btrainSttus; //btrainSttus
       const isLastTrain = Array.isArray(entry.lstcarAt) ? entry.lstcarAt[0] : entry.lstcarAt//lstcarAt
-
+      const arvlCd = Array.isArray(entry.arvlCd) ? entry.arvlCd[0] : entry.arvlCd; //arvlCd
+      const arvlMsg2 = Array.isArray(entry.arvlMsg2) ? entry.arvlMsg2[0] : entry.arvlMsg2; //arvlMsg2
+      const arvlMsg3 = Array.isArray(entry.arvlMsg3) ? entry.arvlMsg3[0] : entry.arvlMsg3; //arvlMsg3
       if (entryBarvlDt !== undefined && entryBarvlDt !== null && entryBarvlDt !== '' && 
           direction !== undefined && direction !== null && direction !== '' && 
           typeOfTrain !== undefined && typeOfTrain !== null && typeOfTrain !== '' && 
-          isLastTrain !== undefined && isLastTrain !== null && isLastTrain !== '' ) {
+          isLastTrain !== undefined && isLastTrain !== null && isLastTrain !== '' &&
+          arvlCd !== undefined && arvlCd !== null && arvlCd !== '' &&
+          arvlMsg2 !== undefined && arvlMsg2 !== null && arvlMsg2 !== '' &&
+          arvlMsg3 !== undefined && arvlMsg3 !== null && arvlMsg3 !== ''
+        ) {
 
-          const trainInfoToSendToFrontend = {
-            stationName: stationName,
-            lineName: lineName,
-            direction: direction,
-            typeOfTrain: typeOfTrain,
-            isLastTrain: isLastTrain,
-            arrivalTime: Math.round(Number(entryBarvlDt) / 60).toString() // Convert seconds to minutes and store as string
-          };
-              listOfTrainInfoDicts.push(trainInfoToSendToFrontend)
+        const arrivalTimeInSeconds = Number(entryBarvlDt);
+        let arrivalTime;
+
+        if (arrivalTimeInSeconds === 0) {
+            arrivalTime = "0";
+        } else if (arrivalTimeInSeconds < 60 && arrivalTimeInSeconds > 0) {
+            arrivalTime = "<1";
+        } else {
+            arrivalTime = Math.round(arrivalTimeInSeconds / 60).toString();
+        }
+
+        const trainInfoToSendToFrontend = {
+          stationName: stationName,
+          lineName: lineName,
+          direction: direction,
+          typeOfTrain: typeOfTrain,
+          isLastTrain: isLastTrain,
+          arrivalTime: arrivalTime, // Adjusted logic for arrivalTime
+          arvlCd: arvlCd,
+          arvlMsg2: arvlMsg2,
+          arvlMsg3: arvlMsg3
+        };
+        listOfTrainInfoDicts.push(trainInfoToSendToFrontend);
 
       } else {
         console.log(`somedata is missing or empty for entry: ${JSON.stringify(entry)}, which is for ${stationName}`);
@@ -154,6 +174,7 @@ export const getTrainInfoAndArrivalTime = (
   console.log(`No arrival info found for lineID ${lineID} and station ${stationName}.`);
   return null;
 };
+
 
 
 
